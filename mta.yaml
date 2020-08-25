@@ -1,0 +1,124 @@
+## Generated mta.yaml based on yo sap-partner-eng version 0.3.6
+## appName = dyndep
+## language=nodejs; multiTenant=false
+## approuter=dyndep-app
+_schema-version: '3.1'
+ID: dyndep
+version: 0.0.1
+description: HDI Dynamic Deployer Sample Code
+parameters:
+   enable-parallel-deployments: true
+  
+  
+build-parameters:
+  before-all:
+   - builder: custom
+     commands:
+      - npm install
+      - npx -p @sap/cds-dk cds build
+
+modules:
+
+### New Modules Here ###
+
+# cf push dyndep-hdb -p db -k 512M -m 512M -u none ; sleep 60 ; cf stop dyndep-hdb
+ - name: dyndep-hdb
+   type: hdb
+   path: db
+   parameters:
+      memory: 512M
+      disk-quota: 512M
+      #host: ${org}-${space}-dyndep-hdb
+      #domain: cfapps.us10.hana.ondemand.com
+   requires:
+    - name: dyndep-hdi
+
+# cf push dyndep-app -p app -n dyndep-app -d cfapps.us10.hana.ondemand.com -k 256M -m 256M
+ - name: dyndep-app
+   type: html5
+   path: app
+   build-parameters:
+      # Don't package the dependencies if you're running into EINTEGRITY issues
+      ignore: ["default-env.json","package-lock.json", "node_modules/"]
+      # Suppress the calling of npm install by listing no commands
+      builder: custom
+      commands: []
+   parameters:
+      #host: ${org}-${space}-dyndep-app
+      #domain: cfapps.us10.hana.ondemand.com
+      #routes:
+      #  - route: dyndep-app-${space}-${app-name}.${default-domain}
+      disk-quota: 256M
+      memory: 256M
+   provides:
+    - name: Router_api
+      properties:
+         url: ${default-url}
+         application: ${app-name}
+# CDS-MTX
+   requires:
+   # cf bind-service dyndep-app DYNDEP_UAA
+    - name: dyndep-uaa
+   ### New Destinations Here ###
+
+resources:
+
+# cf create-service xsuaa application DYNDEP_UAA -c ./cds-security.json
+ - name: dyndep-uaa
+   type: org.cloudfoundry.managed-service
+   requires:
+    - name: Router_api
+   properties:
+      XSAPPNAME: ${xsuaa-app}
+   parameters:
+      # Re-run the following command after changing any @(requires: []) definitions in srv/*.cds
+      # Run this from the root of the project and uncomment the path:
+      # cds compile srv/ --to xsuaa,json > cds-security.json
+      #path: ./cds-security.json
+      # The combination of path: and config.scopes: Doesn't seem work.  Use one or the other.
+      # cds compile srv/ --to xsuaa,yaml and make sure the config: below matches
+      #path: ./cds-security.json
+      #path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+      service-name: DYNDEP_UAA
+      xsuaa-app: ${space}-~{Router_api/application}
+      # Define within config what used to be in the xs-security.json file.  path: now pulls in cds scopes/role templates
+      # Convert with https://www.json2yaml.com/
+      # https://github.wdf.sap.corp/pages/cap/guides/authorization#role-assignments-with-xsuaa
+      config:
+         xsappname: ${xsuaa-app}
+         ### tenant-mode
+         tenant-mode: dedicated
+         description: Security profile of the dyndep application
+         scopes:
+          - name: "$XSAPPNAME.Callback"
+            description: With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.
+            grant-as-authority-to-apps: 
+             - "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+          - name: "$XSAPPNAME.Administrator"
+            description: Administrate the application
+          - name: "$XSAPPNAME.User"
+            description: Use the application
+         role-templates:
+          - name: Administrator
+            description: Administrator
+            scope-references:
+             - "$XSAPPNAME.Administrator"
+          - name: User
+            description: User
+            scope-references:
+             - "$XSAPPNAME.User"
+         oauth2-configuration:
+            redirect-uris: 
+             - "http*://*.cfapps.us10.hana.ondemand.com/**"
+
+### New Resources Here ###
+
+ - name: dyndep-hdi
+   type: com.sap.xs.hdi-container
+   parameters:
+      service-name: DYNDEP_HDI
+      config:
+         schema: 
+
