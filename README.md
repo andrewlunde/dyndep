@@ -2,6 +2,12 @@
 
 Welcome to the dyndep project.
 
+## Documentation
+
+## Library Repo
+
+https://www.npmjs.com/package/@sap/hdi-dynamic-deploy
+
 It contains these folders and files, following the CAP recommended project layout:
 
 File / Folder | Purpose
@@ -27,22 +33,43 @@ File / Folder | Purpose
 
 Learn more at https://cap.cloud.sap/docs/get-started/
 
-# Build Command:
+# XSA Build Command:
 ```
-cd dyndep ; mkdir -p mta_archives ; mbt build -p=cf -t=mta_archives --mtar=dyndep.mtar
-```
-
-# Deploy Command:
-```
-cf deploy mta_archives/dyndep.mtar -f
+mbt build -p=xsa -t=mta_archives --mtar=dyndep_xsa.mtar
 ```
 
-# Subsequent Build+Deploy Commands:
+# XSA Deploy Command:
 ```
-mbt build -p=cf -t=mta_archives --mtar=dyndep.mtar ; cf deploy mta_archives/dyndep.mtar -f
+xs deploy mta_archives/dyndep_xsa.mtar -f
 ```
 
-# Undeploy Command:
+# XSA Subsequent Build+Deploy Commands:
+```
+mbt build -p=xsa -t=mta_archives --mtar=dyndep_xsa.mtar ; xs deploy mta_archives/dyndep_xsa.mtar -f
+```
+
+# XSA Undeploy Command:
+```
+xs undeploy dyndep -f --delete-services
+```
+
+
+# CF Build Command:
+```
+mbt build -p=cf -t=mta_archives --mtar=dyndep_cf.mtar
+```
+
+# CF Deploy Command:
+```
+cf deploy mta_archives/dyndep_cf.mtar -f
+```
+
+# CF Subsequent Build+Deploy Commands:
+```
+mbt build -p=cf -t=mta_archives --mtar=dyndep_cf.mtar ; cf deploy mta_archives/dyndep_cf.mtar -f
+```
+
+# CF Undeploy Command:
 ```
 cf undeploy dyndep -f --delete-services
 ```

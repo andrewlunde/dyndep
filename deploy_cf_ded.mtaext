@@ -1,0 +1,20 @@
+ID: dyndep.cf_deploy
+extends: dyndep
+_schema-version: '3.1'
+
+modules:
+
+ - name: dyndep-app
+   parameters:
+      memory: 256M
+   properties:
+      TENANT_HOST_PATTERN: '^(.*)-${space}-${app-name}.cfapps.us10.hana.ondemand.com'
+
+
+resources:
+
+ - name: dyndep-uaa
+   parameters:
+      service-plan: application
+      config:
+         tenant-mode: dedicated
