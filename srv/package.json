@@ -7,6 +7,7 @@
     "@sap/instance-manager": "2.2.0",
     "express": "~4.16.0",
     "passport": "^0.4.0",
+    "axios": "^0.20.0",
     "stringify-object": "latest",
     "nodemon": "latest",
     "body-parser": "latest"
