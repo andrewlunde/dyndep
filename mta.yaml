@@ -21,7 +21,6 @@ modules:
 
 ### New Modules Here ###
 
-# cf push dyndep-srv -p srv -n dyndep-srv -d cfapps.us10.hana.ondemand.com -k 512M -m 256M
 # xs push dyndep-srv -p srv -n dyndep-srv -k 512M -m 256M
  - name: dyndep-srv
    type: nodejs
@@ -129,7 +128,6 @@ modules:
    requires:
     - name: dyndep-log
 
-# cf push dyndep-hdb -p db -k 512M -m 512M -u none ; sleep 60 ; cf stop dyndep-hdb
  - name: dyndep-hdb
    type: com.sap.xs.hdi
    path: db
@@ -147,7 +145,6 @@ modules:
    requires:
     - name: dyndep-hdi
 
-# cf push dyndep-app -p app -n dyndep-app -d cfapps.us10.hana.ondemand.com -k 256M -m 256M
  - name: dyndep-app
    type: html5
    path: app
@@ -183,7 +180,7 @@ modules:
 
 resources:
 
-# cf create-service xsuaa application DYNDEP_UAA -c ./cds-security.json
+# xs create-service xsuaa application DYNDEP_UAA -c ./cds-security.json
  - name: dyndep-uaa
    type: org.cloudfoundry.managed-service
    requires:
@@ -229,9 +226,6 @@ resources:
             description: User
             scope-references:
              - "$XSAPPNAME.User"
-#         oauth2-configuration:
-#            redirect-uris: 
-#             - "http*://*.cfapps.us10.hana.ondemand.com/**"
 
 ### New Resources Here ###
 
@@ -263,4 +257,3 @@ resources:
       config:
          acquireTimeoutMillis: max
          polling_timeout_seconds: 480
-
