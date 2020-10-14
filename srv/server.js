@@ -208,46 +208,8 @@ app.get("/node/instance_deploy", function (req, res) {
 	var responseStr = "";
 	responseStr += "<!DOCTYPE HTML><html><head><title>Deploy Instance</title></head><body><h1>Deploy Instance</h1><h2>SUCCESS!</h2><br />";
 
-// https://hxe45p.lcfx.net:51056/v1/deploy
-/*
-{
-  "TARGET_CONTAINER": "DYNDEP_HDI1",
-  "DEPLOY_ID": "DEPLOY_ME11",
-  "APPLICATION_VERSION_INFO": "MyVersionInfo",
-  "HDI_DEPLOY_OPTIONS": {
-      "include_filter": ["src/src1/"]
-  },
-  "VCAP_SERVICES" : {
-    "hana" : [ {
-      "name" : "DYNDEP_HDI1",
-      "label" : "hana",
-      "tags" : [ "hana", "database", "relational" ],
-      "plan" : "hdi-shared",
-   "credentials": {
-    "host": "hxe45p.lcfx.net",
-    "port": "30013",
-    "driver": "com.sap.db.jdbc.Driver",
-    "url": "jdbc:sap://hxe45p.lcfx.net:30013/?currentschema=57FAEFD9E37F4CD5B796B610BBD155A2",
-    "schema": "57FAEFD9E37F4CD5B796B610BBD155A2",
-    "hdi_user": "57FAEFD9E37F4CD5B796B610BBD155A2_4VERKQTXWHIZEGKWPNRTX78Z3_DT",
-    "hdi_password": "Kf7bPO3D1XuofSaSOnPlSCHjXedbF5qFVH-6hrdsl372VSa4oxr8Gz44hgmNH-rk_1a4hvSyJaf.LaKdM4YI4AWUrJa_90oN2Tqa1S-fqmLh9_2.xhQ_y1Hr1BV3o5Eo",
-    "user": "57FAEFD9E37F4CD5B796B610BBD155A2_4VERKQTXWHIZEGKWPNRTX78Z3_RT",
-    "password": "Vk8GBRL5TlQD1CAiXhTAO1yIxQxCpGFk0WBDVKUCN49il8TaWSZFZ-jEYfPEQeuWFfv7GwzuxKob76A-ZTh9l_rN9sUM4bspzR899B0q6n2Zmy.DaFXWejh_gSWABUFG",
-    "tenant_name": "SYSTEMDB",
-    "encrypt": false,
-    "db_hosts": [
-      {
-        "port": 30013,
-        "host": "hxe45p.lcfx.net"
-      }
-    ]
-  }
-    } ]
-  }
-}
-*/
 
-    var use_deployer = {};
+    	var use_deployer = {};
 	var use_source = "default";
 	deployers.forEach(deployer => {
 		if ("dyndep_" + req.query.deployer === deployer.name) {
